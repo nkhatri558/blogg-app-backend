@@ -5,6 +5,7 @@ import com.blogging.app.exceptions.ResourceNotFoundException;
 import com.blogging.app.models.User;
 import com.blogging.app.repositories.UserRepository;
 import com.blogging.app.services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public UserDTO addUser(UserDTO userDTO) {
@@ -57,22 +60,10 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDTO userToDTO(User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setUsername(user.getUsername());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setAbout(user.getAbout());
-        return userDTO;
+        return this.modelMapper.map(user, UserDTO.class);
     }
 
     public User dtoToUser(UserDTO userDTO) {
-        User user = new User();
-        user.setId(userDTO.getId());
-        user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-        user.setAbout(userDTO.getAbout());
-        return user;
+        return this.modelMapper.map(userDTO, User.class);
     }
 }
