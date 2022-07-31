@@ -3,8 +3,13 @@ package com.blogging.app.exceptions;
 import com.blogging.app.utils.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -14,5 +19,17 @@ public class GlobalExceptionHandler {
         String message = ex.getMessage();
         ApiResponse apiResponse = new ApiResponse(message, false);
         return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleMethodArgsNotValidException(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> response = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach(objectError -> {
+            String fieldName = ((FieldError)objectError).getField();
+            String message = objectError.getDefaultMessage();
+            response.put(fieldName, message);
+        });
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
