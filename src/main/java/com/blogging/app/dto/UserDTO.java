@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -17,7 +16,7 @@ public class UserDTO {
     private Integer id;
 
     @NotEmpty
-    @Min(value = 4, message = "Username should be minimum of size 4")
+    @Size(min = 4, max = 20, message = "Username should be minimum of size 4 and maximum of size 20")
     private String username;
     @NotEmpty(message = "Email should not be empty")
     @Email(message = "Email is not valid")
